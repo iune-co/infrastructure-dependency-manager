@@ -33,6 +33,6 @@ let package = Package(
             dependencies: [
                 "InfrastructureDependencyManager"
             ]
-        ),
+        )
     ]
 )
