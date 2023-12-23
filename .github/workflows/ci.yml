@@ -1,0 +1,20 @@
+name: InfrastructureDependencyManager CI
+
+on:
+  push:
+    branches:
+      - main
+    pull_request:
+      branches:
+        - main
+
+jobs:
+  build-and-test:
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and test
+        run: |
+          swift build
+          swift test
+          
