@@ -14,7 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(
-            url: "https://github.com/iune-co/infrastructure-dependency-container.git",
+            url: "git@github.com:iune-co/infrastructure-dependency-container.git",
             exact: Version("1.1.0")
         )
     ],
