@@ -15,7 +15,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/iune-co/infrastructure-dependency-container.git",
-            exact: Version("1.1.0")
+            exact: Version("2.0.0")
         )
     ],
     targets: [

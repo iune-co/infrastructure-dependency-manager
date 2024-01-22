@@ -5,20 +5,15 @@ final class InfrastructureDependencyManagerTests: XCTestCase
 {
     func test_whenDependencyManagerInits_callsRegisterMethodOnServiceRegister()
     {
-        // given
-        let dummyService = DummyServiceImplementation()
-        let serviceRegisterMock = ServiceRegisterMock(
-            servicesToRegister: [
-                { dummyService as DummyService }
-            ]
-        )
+        // Given
+        let serviceRegisterMock = ServiceRegisterMock()
         
-        // when
+        // When
         _ = DependencyManager.fixtureWithMocks(
             serviceRegisters: [serviceRegisterMock]
         )
         
-        // then
+        // Then
         XCTAssertTrue(
             serviceRegisterMock.registerMethodWasCalled,
             "DependencyManager must call ServiceRegister's register method when initializing."
@@ -27,19 +22,19 @@ final class InfrastructureDependencyManagerTests: XCTestCase
     
     func test_whenDependecyManagerRegisterMethodIsCalled_callsStoreMethodOnStorage()
     {
-        // given
+        // Given
         let dependencyStorageMock = DependencyStorageMock()
         let dummyService = DummyServiceImplementation()
         let dependencyManager = DependencyManager.fixtureWithMocks(
             storage: dependencyStorageMock
         )
         
-        // when
-        dependencyManager.register {
+        // When
+        dependencyManager.register(service: DummyService.self) {
             dummyService as DummyService
         }
         
-        // then
+        // Then
         XCTAssertTrue(
             dependencyStorageMock.storeMethodWasCalled,
             "DependencyManager must call DependencyStorage's store method when registering a service."
@@ -48,13 +43,13 @@ final class InfrastructureDependencyManagerTests: XCTestCase
     
     func test_whenDependencyManagerResolvesUnregisteredService_ReturnsNil()
     {
-        // given
+        // Given
         let dependencyManager = DependencyManager.fixtureWithMocks()
         
-        // when
+        // When
         let retrievedService: DummyService? = dependencyManager.resolve()
         
-        // then
+        // Then
         XCTAssertNil(
             retrievedService,
             "DependencyManager must return nil when resolving an unregistered service."
@@ -63,7 +58,7 @@ final class InfrastructureDependencyManagerTests: XCTestCase
     
     func test_whenDependencyManagerResolvesRegisteredService_ReturnsExpectedInstance()
     {
-        // given
+        // Given
         let dummyService = DummyServiceImplementation()
         let dependencyStorageStub = DependencyStorageStub {
             dummyService as DummyService
@@ -72,10 +67,10 @@ final class InfrastructureDependencyManagerTests: XCTestCase
             storage: dependencyStorageStub
         )
         
-        // when
+        // When
         let retrievedService: DummyService? = dependencyManager.resolve()
         
-        // then
+        // Then
         XCTAssertNotNil(
             retrievedService,
             "DependencyManager must return the expected instance when resolving a registered service."

@@ -14,11 +14,13 @@ public class DependencyManager: DependencyContainer
         }
     }
     
-    public func register<T>(_ dependency: @escaping @autoclosure () -> T)
-    {
+    public func register<T>(
+        service: T.Type,
+        withProvider provider: @escaping () -> T
+    ) {
         storage.store(
             serviceName: String(describing: T.self),
-            instance: dependency
+            instance: provider
         )
     }
     

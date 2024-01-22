@@ -5,7 +5,7 @@ final class DependencyStorageImplementationTests: XCTestCase
 {
     func test_whenServiceStored_StorageRetrievesExpectedService()
     {
-        // given
+        // Given
         let expectedServiceName = String(describing: DummyService.self)
         let expectedService = DummyServiceImplementation()
         let storage = DependencyStorageImplementation.fixture()
@@ -14,10 +14,10 @@ final class DependencyStorageImplementationTests: XCTestCase
             instance: { expectedService as DummyService }
         )
         
-        // when
+        // When
         let retrievedService = storage.retrieve(serviceName: expectedServiceName)?() as? DummyService
         
-        // then
+        // Then
         XCTAssertNotNil(
             retrievedService,
             "DependencyStorage must return expected service instance when retrieve is called."
@@ -26,14 +26,14 @@ final class DependencyStorageImplementationTests: XCTestCase
     
     func test_whenServiceNotStored_StorageReturnsNil()
     {
-        // given
+        // Given
         let expectedServiceName = "NonStoredService"
         let storage = DependencyStorageImplementation.fixture()
         
-        // when
+        // When
         let retrievedService = storage.retrieve(serviceName: expectedServiceName)
         
-        // then
+        // Then
         XCTAssertNil(
             retrievedService,
             "DependencyStorage must return nil when an unregistered service is retrieved."

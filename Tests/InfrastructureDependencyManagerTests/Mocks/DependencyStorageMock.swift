@@ -1,16 +1,14 @@
 @testable import InfrastructureDependencyContainer
 
-class DependencyStorageMock: DependencyStorage
+final class DependencyStorageMock: DependencyStorage
 {
     var serviceToRetrieve: (() -> Any)?
-    var retrieveMethodWasCalled: Bool
-    var storeMethodWasCalled: Bool
+    private(set) var retrieveMethodWasCalled: Bool = false
+    private(set) var storeMethodWasCalled: Bool = false
     
     init(serviceToRetrieve: (() -> Any)? = nil)
     {
         self.serviceToRetrieve = serviceToRetrieve
-        retrieveMethodWasCalled = false
-        storeMethodWasCalled = false
     }
     
     func store(

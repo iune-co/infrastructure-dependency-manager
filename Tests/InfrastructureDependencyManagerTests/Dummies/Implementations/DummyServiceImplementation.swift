@@ -1,1 +1,1 @@
-class DummyServiceImplementation: DummyService {}
+final class DummyServiceImplementation: DummyService {}
