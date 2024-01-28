@@ -16,10 +16,6 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
 
-      - name: Configure Git for HTTPS Authentication
-        run: |
-          git config --global url."https://x-access-token:${{ secrets.IUNE_CO_PAT }}@github.com/".insteadOf "https://github.com/"
-
       - name: Use Xcode 15.1
         run: sudo xcode-select --switch /Applications/Xcode_15.1.app
 
