@@ -2,25 +2,30 @@
 
 final class DependencyStorageMock: DependencyStorage
 {
-    var serviceToRetrieve: (() -> Any)?
-    private(set) var retrieveMethodWasCalled: Bool = false
-    private(set) var storeMethodWasCalled: Bool = false
-    
-    init(serviceToRetrieve: (() -> Any)? = nil)
-    {
-        self.serviceToRetrieve = serviceToRetrieve
-    }
-    
+	private(set) var didCallStore: Bool = false
     func store(
         serviceName: String,
         instance: @escaping () -> Any
     ) {
-        storeMethodWasCalled = true
+		didCallStore = true
     }
     
-    func retrieve(serviceName: String) -> (() -> Any)?
+	var stubRetrieveReturn: Closure?
+	private(set) var didCallRetrieve: Bool = false
+    func retrieve(serviceName: String) -> Closure
     {
-        retrieveMethodWasCalled = true
-        return serviceToRetrieve
+        didCallRetrieve = true
+		return stubRetrieveReturn ?? {()}
     }
+	
+	func store(serviceName: String, instance: @escaping ArgumentedClosure) {
+		
+	}
+	
+	var stubAttributedRetrieveReturn: ArgumentedClosure?
+	private(set) var didCallAttributedRetrieve: Bool = false
+	func retrieve(serviceName: String) throws -> ArgumentedClosure {
+		didCallAttributedRetrieve = true
+		return stubAttributedRetrieveReturn ?? { _ in () }
+	}
 }

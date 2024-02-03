@@ -1,23 +1,41 @@
 import InfrastructureDependencyContainer
 
-public final class DependencyStorageImplementation: DependencyStorage 
-{
-    private var storage: [String: () -> Any]
+public final class DependencyStorageImplementation: DependencyStorage {
+	private var storage: [String: ArgumentedClosure]
     
-    public init()
-    {
+    public init(){
         self.storage = [:]
     }
     
     public func store(
         serviceName: String,
-        instance: @escaping () -> Any
+        instance: @escaping Closure
     ) {
-        storage[serviceName] = instance
+        storage[serviceName] = { _ in instance() }
     }
     
-    public func retrieve(serviceName: String) -> (() -> Any)? 
-    {
-        storage[serviceName]
+	public func store(
+		serviceName: String,
+		instance: @escaping ArgumentedClosure
+	) {
+		storage[serviceName] = instance
+	}
+
+    public func retrieve(serviceName: String) throws -> Closure {
+		guard let service = try storage[serviceName]?(()) else {
+			throw DependencyContainerError.dependencyNotRegistered(serviceName)
+		}
+		
+		return {
+			service
+		}
+    }
+
+    public func retrieve(serviceName: String) throws -> ArgumentedClosure {
+		guard let service = storage[serviceName] else {
+			throw DependencyContainerError.dependencyNotRegistered(serviceName)
+		}
+
+        return service
     }
 }

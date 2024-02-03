@@ -1,7 +1,8 @@
 import XCTest
 @testable import InfrastructureDependencyManager
+import InfrastructureDependencyContainer
 
-final class DependencyStorageImplementationTests: XCTestCase 
+final class DependencyStorageImplementationTests: XCTestCase
 {
     func test_whenServiceStored_StorageRetrievesExpectedService()
     {
@@ -15,7 +16,7 @@ final class DependencyStorageImplementationTests: XCTestCase
         )
         
         // When
-        let retrievedService = storage.retrieve(serviceName: expectedServiceName)?() as? DummyService
+		let retrievedService = try? storage.retrieve(serviceName: expectedServiceName)() as? DummyService
         
         // Then
         XCTAssertNotNil(
@@ -24,14 +25,14 @@ final class DependencyStorageImplementationTests: XCTestCase
         )
     }
     
-    func test_whenServiceNotStored_StorageReturnsNil()
+    func test_whenServiceNotStored_StorageReturnsNil() throws
     {
         // Given
         let expectedServiceName = "NonStoredService"
         let storage = DependencyStorageImplementation.fixture()
         
         // When
-        let retrievedService = storage.retrieve(serviceName: expectedServiceName)
+		let retrievedService: DependencyStorage.Closure = try storage.retrieve(serviceName: expectedServiceName)
         
         // Then
         XCTAssertNil(

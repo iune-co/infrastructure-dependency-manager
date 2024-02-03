@@ -1,4 +1,5 @@
 import XCTest
+import InfrastructureDependencyContainer
 @testable import InfrastructureDependencyManager
 
 final class InfrastructureDependencyManagerTests: XCTestCase 
@@ -36,7 +37,7 @@ final class InfrastructureDependencyManagerTests: XCTestCase
         
         // Then
         XCTAssertTrue(
-            dependencyStorageMock.storeMethodWasCalled,
+            dependencyStorageMock.didCallStore,
             "DependencyManager must call DependencyStorage's store method when registering a service."
         )
     }
@@ -47,7 +48,7 @@ final class InfrastructureDependencyManagerTests: XCTestCase
         let dependencyManager = DependencyManager.fixtureWithMocks()
         
         // When
-        let retrievedService: DummyService? = dependencyManager.resolve()
+        let retrievedService: DummyService? = try? dependencyManager.resolve()
         
         // Then
         XCTAssertNil(
@@ -60,7 +61,8 @@ final class InfrastructureDependencyManagerTests: XCTestCase
     {
         // Given
         let dummyService = DummyServiceImplementation()
-        let dependencyStorageStub = DependencyStorageStub {
+        let dependencyStorageStub = DependencyStorageStub()
+		dependencyStorageStub.stubRetrieveReturn = {
             dummyService as DummyService
         }
         let dependencyManager = DependencyManager.fixtureWithMocks(
@@ -68,7 +70,7 @@ final class InfrastructureDependencyManagerTests: XCTestCase
         )
         
         // When
-        let retrievedService: DummyService? = dependencyManager.resolve()
+        let retrievedService: DummyService = try! dependencyManager.resolve()
         
         // Then
         XCTAssertNotNil(
@@ -76,4 +78,31 @@ final class InfrastructureDependencyManagerTests: XCTestCase
             "DependencyManager must return the expected instance when resolving a registered service."
         )
     }
+	
+    func test_whenDependencyManagerResolvesRegisteredService_andArgs_ReturnsExpectedInstance() throws
+    {
+        // Given
+		let arg = "arg"
+        let dummyService = MockArgumentedDependency(id: arg)
+		let dependencyStorageStub = DependencyStorageStub()
+		dependencyStorageStub.stubArgumentedRetrieveReturn = { _ in
+			dummyService
+		}
+
+        let dependencyManager = DependencyManager.fixtureWithMocks(
+            storage: dependencyStorageStub
+        )
+        
+        // When
+		let retrievedService: MockArgumentedDependency = try dependencyManager.resolve(argument: arg)
+        
+        // Then
+		
+		
+        XCTAssertNotNil(
+            retrievedService,
+            "DependencyManager must return the expected instance when resolving a registered service."
+        )
+    }
 }
+

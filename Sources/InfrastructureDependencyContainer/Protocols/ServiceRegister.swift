@@ -1,4 +1,3 @@
-public protocol ServiceRegister
-{
+public protocol ServiceRegister {
     func register(on: DependencyContainer)
 }

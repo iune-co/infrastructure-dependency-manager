@@ -1,5 +1,8 @@
-public protocol DependencyStorage
-{
-    func store(serviceName: String, instance: @escaping () -> Any)
-    func retrieve(serviceName: String) -> (() -> Any)?
+public protocol DependencyStorage {
+	typealias ArgumentedClosure = ((Any) throws -> Any)
+	typealias Closure = () -> Any
+    func store(serviceName: String, instance: @escaping Closure)
+    func retrieve(serviceName: String) throws -> Closure
+    func store(serviceName: String, instance: @escaping ArgumentedClosure)
+    func retrieve(serviceName: String) throws -> ArgumentedClosure
 }
