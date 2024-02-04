@@ -1,17 +1,22 @@
 import InfrastructureDependencyContainer
 
 public final class DependencyStorageImplementation: DependencyStorage {
-	private var storage: [String: ArgumentedClosure]
-    
-    public init(){
-        self.storage = [:]
-    }
+	private var storage: [String: ArgumentedClosure] = [:]
+	private var singletonStorage: [String: Any] = [:]
+	
+    public init() {}
     
     public func store(
         serviceName: String,
-        instance: @escaping Closure
+        instance: @escaping Closure,
+		lifetime: DependencyLifetime
     ) {
-        storage[serviceName] = { _ in instance() }
+		switch lifetime {
+		case .singletone:
+			singletonStorage[serviceName] = instance()
+		case .transient:
+			storage[serviceName] = { _ in instance() }
+		}
     }
     
 	public func store(
@@ -22,7 +27,7 @@ public final class DependencyStorageImplementation: DependencyStorage {
 	}
 
     public func retrieve(serviceName: String) throws -> Closure {
-		guard let service = try storage[serviceName]?(()) else {
+		guard let service = try singletonStorage[serviceName] ?? storage[serviceName]?(()) else {
 			throw DependencyContainerError.dependencyNotRegistered(serviceName)
 		}
 		
@@ -38,4 +43,9 @@ public final class DependencyStorageImplementation: DependencyStorage {
 
         return service
     }
+}
+
+public enum DependencyLifetime {
+	case singletone
+	case transient
 }
