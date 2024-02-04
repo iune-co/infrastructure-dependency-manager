@@ -5,11 +5,11 @@ extension DependencyManager
 {
     static func fixtureWithMocks(
         storage: DependencyStorage = DependencyStorageMock(),
-        serviceRegisters: [ServiceRegister] = [ServiceRegisterMock()]
+        serviceRegistrars: [ServiceRegistrar] = [ServiceRegistrarMock()]
     ) -> DependencyManager {
         DependencyManager(
             storage: storage,
-            serviceRegisters: serviceRegisters
+            serviceRegistrars: serviceRegistrars
         )
     }
 }

@@ -3,11 +3,14 @@
 final class DependencyStorageMock: DependencyStorage
 {
 	private(set) var didCallStore: Bool = false
+	private(set) var storeInstanceClosure: Closure?
     func store(
         serviceName: String,
-        instance: @escaping () -> Any
+        instance: @escaping Closure,
+		lifetime: DependencyLifetime
     ) {
 		didCallStore = true
+		storeInstanceClosure = instance
     }
     
 	var stubRetrieveReturn: Closure?
@@ -18,14 +21,22 @@ final class DependencyStorageMock: DependencyStorage
 		return stubRetrieveReturn ?? {()}
     }
 	
+	private(set) var didCallArgumentedStore = false
+	private(set) var storeInstanceArgumentedClosure: ArgumentedClosure?
 	func store(serviceName: String, instance: @escaping ArgumentedClosure) {
-		
+		didCallArgumentedStore = true
+		storeInstanceArgumentedClosure = instance
 	}
 	
-	var stubAttributedRetrieveReturn: ArgumentedClosure?
+	var stubArgumentedRetrieveReturn: ArgumentedClosure?
+	var stubArgumentedError: Error?
 	private(set) var didCallAttributedRetrieve: Bool = false
 	func retrieve(serviceName: String) throws -> ArgumentedClosure {
 		didCallAttributedRetrieve = true
-		return stubAttributedRetrieveReturn ?? { _ in () }
+		guard stubArgumentedError == nil else {
+			throw stubArgumentedError!
+		}
+
+		return stubArgumentedRetrieveReturn ?? { _ in () }
 	}
 }

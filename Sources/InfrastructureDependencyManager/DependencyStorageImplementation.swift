@@ -1,7 +1,7 @@
 import InfrastructureDependencyContainer
 
 public final class DependencyStorageImplementation: DependencyStorage {
-	private var storage: [String: ArgumentedClosure] = [:]
+	private var transientStorage: [String: ArgumentedClosure] = [:]
 	private var singletonStorage: [String: Any] = [:]
 	
     public init() {}
@@ -12,10 +12,10 @@ public final class DependencyStorageImplementation: DependencyStorage {
 		lifetime: DependencyLifetime
     ) {
 		switch lifetime {
-		case .singletone:
+		case .singleton:
 			singletonStorage[serviceName] = instance()
 		case .transient:
-			storage[serviceName] = { _ in instance() }
+			transientStorage[serviceName] = { _ in instance() }
 		}
     }
     
@@ -23,11 +23,11 @@ public final class DependencyStorageImplementation: DependencyStorage {
 		serviceName: String,
 		instance: @escaping ArgumentedClosure
 	) {
-		storage[serviceName] = instance
+		transientStorage[serviceName] = instance
 	}
 
     public func retrieve(serviceName: String) throws -> Closure {
-		guard let service = try singletonStorage[serviceName] ?? storage[serviceName]?(()) else {
+		guard let service = try singletonStorage[serviceName] ?? transientStorage[serviceName]?(()) else {
 			throw DependencyContainerError.dependencyNotRegistered(serviceName)
 		}
 		
@@ -37,15 +37,10 @@ public final class DependencyStorageImplementation: DependencyStorage {
     }
 
     public func retrieve(serviceName: String) throws -> ArgumentedClosure {
-		guard let service = storage[serviceName] else {
+		guard let service = transientStorage[serviceName] else {
 			throw DependencyContainerError.dependencyNotRegistered(serviceName)
 		}
 
         return service
     }
-}
-
-public enum DependencyLifetime {
-	case singletone
-	case transient
 }

@@ -6,21 +6,23 @@ public class DependencyManager: DependencyContainer
 
     public init(
         storage: DependencyStorage,
-        serviceRegisters: [ServiceRegister]
+		serviceRegistrars: [ServiceRegistrar]
     ) {
         self.storage = storage
-        serviceRegisters.forEach {
+		serviceRegistrars.forEach {
             $0.register(on: self)
         }
     }
     
     public func register<T>(
         service: T.Type,
-        withProvider provider: @escaping () -> T
+        withProvider provider: @escaping () -> T,
+		lifetime: DependencyLifetime
     ) {
         storage.store(
             serviceName: String(describing: T.self),
-            instance: provider
+            instance: provider,
+			lifetime: lifetime
         )
     }
 
