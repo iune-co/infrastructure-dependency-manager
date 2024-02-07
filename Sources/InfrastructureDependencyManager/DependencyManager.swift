@@ -31,7 +31,7 @@ public class DependencyManager: DependencyContainer
         storage.store(
             serviceName: String(describing: T.self),
             instance: provider,
-			lifetime: scope
+			scope: scope
         )
     }
 

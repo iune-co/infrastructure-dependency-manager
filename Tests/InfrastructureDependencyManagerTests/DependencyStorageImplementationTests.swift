@@ -15,7 +15,7 @@ final class DependencyStorageImplementationTests: XCTestCase
 		underTest.store(
 			serviceName: expectedServiceName,
 			instance: { expectedService as DummyService },
-			lifetime: .unique
+			scope: .unique
 		)
 		let retrievedService = try? underTest.retrieve(serviceName: expectedServiceName)() as? DummyService
 
@@ -36,7 +36,7 @@ final class DependencyStorageImplementationTests: XCTestCase
 		underTest.store(
 			serviceName: expectedServiceName,
 			instance: { DummyServiceImplementation() as DummyService },
-			lifetime: .unique
+			scope: .unique
 		)
         
 		let firstRetrievedInstance = try? underTest.retrieve(serviceName: expectedServiceName)() as? DummyServiceImplementation
@@ -56,7 +56,7 @@ final class DependencyStorageImplementationTests: XCTestCase
 		underTest.store(
 			serviceName: expectedServiceName,
 			instance: { DummyServiceImplementation() as DummyService },
-			lifetime: .singleton
+			scope: .singleton
 		)
         
 		let firstRetrievedInstance = try? underTest.retrieve(serviceName: expectedServiceName)() as? DummyServiceImplementation

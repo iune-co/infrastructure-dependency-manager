@@ -7,7 +7,7 @@ final class DependencyStorageMock: DependencyStorage
     func store(
         serviceName: String,
         instance: @escaping Closure,
-		lifetime: DependencyScope
+		scope: DependencyScope
     ) {
 		didCallStore = true
 		storeInstanceClosure = instance

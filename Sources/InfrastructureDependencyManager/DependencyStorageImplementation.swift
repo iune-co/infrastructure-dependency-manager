@@ -9,9 +9,9 @@ final class DependencyStorageImplementation: DependencyStorage {
     func store(
         serviceName: String,
         instance: @escaping Closure,
-		lifetime: DependencyScope
+		scope: DependencyScope
     ) {
-		switch lifetime {
+		switch scope {
 		case .singleton:
 			singletonStorage[serviceName] = instance()
 		case .unique:
