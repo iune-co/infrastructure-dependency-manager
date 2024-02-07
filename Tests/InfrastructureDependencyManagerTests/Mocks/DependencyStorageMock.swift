@@ -1,4 +1,5 @@
-@testable import InfrastructureDependencyContainer
+@testable import InfrastructureDependencyManager
+import InfrastructureDependencyContainer
 
 final class DependencyStorageMock: DependencyStorage
 {

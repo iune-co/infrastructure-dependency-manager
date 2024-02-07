@@ -12,14 +12,14 @@ final class InfrastructureDependencyManagerTests: XCTestCase
         let serviceRegistrarMock = ServiceRegistrarMock()
         
         // When
-        _ = DependencyManager.fixtureWithMocks(
+        _ = DependencyContainerImplementation.fixtureWithMocks(
             serviceRegistrars: [serviceRegistrarMock]
         )
         
         // Then
         XCTAssertTrue(
             serviceRegistrarMock.registerMethodWasCalled,
-            "DependencyManager must call ServiceRegistrar's register method when initializing."
+            "DependencyContainerImplementation must call ServiceRegistrar's register method when initializing."
         )
     }
     
@@ -30,7 +30,7 @@ final class InfrastructureDependencyManagerTests: XCTestCase
         // Given
         let dependencyStorageMock = DependencyStorageMock()
         let dummyService = DummyServiceImplementation()
-        let underTest = DependencyManager.fixtureWithMocks(
+        let underTest = DependencyContainerImplementation.fixtureWithMocks(
             storage: dependencyStorageMock
         )
         
@@ -46,7 +46,7 @@ final class InfrastructureDependencyManagerTests: XCTestCase
 		// Then
 		XCTAssertTrue(
             dependencyStorageMock.didCallStore,
-            "DependencyManager must call DependencyStorage's store method when registering a service."
+            "DependencyContainerImplementation must call DependencyStorage's store method when registering a service."
         )
     }
 
@@ -57,7 +57,7 @@ final class InfrastructureDependencyManagerTests: XCTestCase
         // Given
         let dependencyStorageMock = DependencyStorageMock()
 		let arg = "arg"
-        let underTest = DependencyManager.fixtureWithMocks(
+        let underTest = DependencyContainerImplementation.fixtureWithMocks(
             storage: dependencyStorageMock
         )
         
@@ -74,7 +74,7 @@ final class InfrastructureDependencyManagerTests: XCTestCase
 		// Then
 		XCTAssertTrue(
             dependencyStorageMock.didCallArgumentedStore,
-            "DependencyManager must call DependencyStorage's store method when registering a service."
+            "DependencyContainerImplementation must call DependencyStorage's store method when registering a service."
         )
     }
     
@@ -86,7 +86,7 @@ final class InfrastructureDependencyManagerTests: XCTestCase
 		let expectedServiceName = String(describing: DummyArgumentedServiceImplementation.self)
 		let expectedArgumentName = String(describing: DummyArgumentedServiceImplementation.Arguments.self)
 		let expectedError = DependencyContainerError.incorrectArgumentType(expectedServiceName, argumentName: expectedArgumentName)
-		let underTest = DependencyManager.fixtureWithMocks(
+		let underTest = DependencyContainerImplementation.fixtureWithMocks(
 			storage: dependencyStorageMock
 		)
 		underTest.register(
@@ -113,17 +113,17 @@ final class InfrastructureDependencyManagerTests: XCTestCase
 		dependencyStorageStub.stubRetrieveReturn = {
 			dummyService as DummyService
 		}
-		let dependencyManager = DependencyManager.fixtureWithMocks(
+		let dependencyContainer = DependencyContainerImplementation.fixtureWithMocks(
 			storage: dependencyStorageStub
 		)
 		
 		// When
-		let retrievedService: DummyService = try! dependencyManager.resolve()
+		let retrievedService: DummyService = try! dependencyContainer.resolve()
 		
 		// Then
 		XCTAssertNotNil(
 			retrievedService,
-			"DependencyManager must return the expected instance when resolving a registered service."
+			"DependencyContainerImplementation must return the expected instance when resolving a registered service."
 		)
 	}
 
@@ -131,7 +131,7 @@ final class InfrastructureDependencyManagerTests: XCTestCase
     {
         // Given
 		let dependencyStorageMock = DependencyStorageMock()
-		let underTest = DependencyManager.fixtureWithMocks(
+		let underTest = DependencyContainerImplementation.fixtureWithMocks(
 			storage: dependencyStorageMock
 		)
 		let expectedServiceName = "DummyService"
@@ -149,7 +149,7 @@ final class InfrastructureDependencyManagerTests: XCTestCase
     {
         // Given
 		let dependencyStorageMock = DependencyStorageMock()
-		let underTest = DependencyManager.fixtureWithMocks(
+		let underTest = DependencyContainerImplementation.fixtureWithMocks(
 			storage: dependencyStorageMock
 		)
 		let expectedServiceName = "DummyArgumentedServiceImplementation"
@@ -174,19 +174,19 @@ final class InfrastructureDependencyManagerTests: XCTestCase
 			dummyService
 		}
 
-		let dependencyManager = DependencyManager.fixtureWithMocks(
+		let dependencyContainer = DependencyContainerImplementation.fixtureWithMocks(
 			storage: dependencyStorageStub
 		)
 		
 		// When
-		let retrievedService: MockArgumentedDependency = try dependencyManager.resolve(argument: arg)
+		let retrievedService: MockArgumentedDependency = try dependencyContainer.resolve(argument: arg)
 		
 		// Then
 		
 		
 		XCTAssertNotNil(
 			retrievedService,
-			"DependencyManager must return the expected instance when resolving a registered service."
+			"DependencyContainerImplementation must return the expected instance when resolving a registered service."
 		)
 	}
     
@@ -194,7 +194,7 @@ final class InfrastructureDependencyManagerTests: XCTestCase
     {
         // Given
 		let dependencyStorageMock = DependencyStorageMock()
-		let underTest = DependencyManager.fixtureWithMocks(
+		let underTest = DependencyContainerImplementation.fixtureWithMocks(
 			storage: dependencyStorageMock
 		)
 		let expectedServiceName = "NonStoredService"
@@ -213,7 +213,7 @@ final class InfrastructureDependencyManagerTests: XCTestCase
     {
         // Given
 		let dependencyStorageMock = DependencyStorageMock()
-		let underTest = DependencyManager.fixtureWithMocks(
+		let underTest = DependencyContainerImplementation.fixtureWithMocks(
 			storage: dependencyStorageMock
 		)
 		let expectedServiceName = "DummyArgumentedServiceImplementation"

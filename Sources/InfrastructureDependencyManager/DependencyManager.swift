@@ -1,76 +1,70 @@
+import Foundation
 import InfrastructureDependencyContainer
 
-public class DependencyManager: DependencyContainer
-{
-    private let storage: DependencyStorage
-
-    public init(
-        storage: DependencyStorage,
-		serviceRegistrars: [ServiceRegistrar]
-    ) {
-        self.storage = storage
-		serviceRegistrars.forEach {
-            $0.register(on: self)
-        }
-    }
-    
-	public init(
-		serviceRegistrars: [ServiceRegistrar]
+public final class DependencyInjectionManager: DependencyManager {
+	private let globalContainer: DependencyContainer
+	private let localContainer: DependencyContainer
+	
+	init(
+		from container: DependencyContainer,
+		serviceRegistrars: [ServiceRegistrar]) {
+			self.globalContainer = container
+			self.localContainer = DependencyContainerImplementation(serviceRegistrars: serviceRegistrars)
+		}
+	
+	public func register<T: ArgumentedDependency>(
+		service: T.Type,
+		withProvider provider: @escaping (T.Arguments) throws -> T,
+		context: DependencyContext
 	) {
-		self.storage = DependencyStorageImplementation()
-		serviceRegistrars.forEach {
-			$0.register(on: self)
-		}
+		getContainer(for: context)
+			.register(
+				service: service,
+				withProvider: provider
+			)
 	}
-
-    public func register<T>(
-        service: T.Type,
-        withProvider provider: @escaping () -> T,
-		scope: DependencyScope
-    ) {
-        storage.store(
-            serviceName: String(describing: T.self),
-            instance: provider,
-			scope: scope
-        )
-    }
-
-    public func register<T: ArgumentedDependency>(
-        service: T.Type,
-		withProvider provider: @escaping (T.Arguments) throws -> T
-    ) {
-		let serviceName = String(describing: T.self)
-        storage.store(
-            serviceName: serviceName,
-			instance: { argument in
-				guard let argument = argument as? T.Arguments else {
-					throw DependencyContainerError.incorrectArgumentType(serviceName, argumentName: String(describing: T.Arguments.self))
-				}
-				
-				return try provider(argument)
-			}
-        )
-    }
-    
-    public func resolve<T>() throws -> T {
-        let serviceName = String(describing: T.self)
-		let initializer: DependencyStorage.Closure = try storage.retrieve(serviceName: serviceName)
-		
-		guard let instance = initializer() as? T  else {
-			throw DependencyContainerError.corruptedDependencyInstance(serviceName)
+	
+	public func register<T>(
+		service: T.Type,
+		withProvider provider: @escaping () -> T,
+		scope: DependencyScope,
+		context: DependencyContext
+	) {
+		getContainer(for: context)
+			.register(
+				service: service,
+				withProvider: provider,
+				scope: scope
+			)
+	}
+	
+	public func resolve<T>() throws -> T {
+		guard let value: T = try? localContainer.resolve() else {
+			return try globalContainer.resolve()
 		}
 		
-		return  instance
-    }
+		return value
+	}
 	
 	public func resolve<T: ArgumentedDependency>(argument: T.Arguments) throws -> T {
-		let serviceName = String(describing: T.self)
-		let initializer: DependencyStorage.ArgumentedClosure = try storage.retrieve(serviceName: serviceName)
-		
-		guard let instance = try initializer(argument) as? T  else {
-			throw DependencyContainerError.corruptedDependencyInstance(serviceName)
+		guard let value: T = try? localContainer.resolve() else {
+			return try globalContainer.resolve()
 		}
 		
-		return  instance
-    }
+		return value
+	}
+
+}
+
+// MARK: - Private Methods
+
+extension DependencyInjectionManager {
+	private func getContainer(for context: DependencyContext) -> DependencyContainer {
+		switch context {
+		case .global:
+			globalContainer
+		case .local:
+			localContainer
+		}
+	}
 }

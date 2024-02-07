@@ -1,13 +1,13 @@
 @testable import InfrastructureDependencyManager
 @testable import InfrastructureDependencyContainer
 
-extension DependencyManager
+extension DependencyContainerImplementation
 {
     static func fixtureWithMocks(
         storage: DependencyStorage = DependencyStorageMock(),
         serviceRegistrars: [ServiceRegistrar] = [ServiceRegistrarMock()]
-    ) -> DependencyManager {
-        DependencyManager(
+    ) -> DependencyContainerImplementation {
+        DependencyContainerImplementation(
             storage: storage,
             serviceRegistrars: serviceRegistrars
         )
