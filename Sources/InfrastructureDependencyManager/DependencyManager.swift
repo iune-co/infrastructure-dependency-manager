@@ -14,15 +14,24 @@ public class DependencyManager: DependencyContainer
         }
     }
     
+	public init(
+		serviceRegistrars: [ServiceRegistrar]
+	) {
+		self.storage = DependencyStorageImplementation()
+		serviceRegistrars.forEach {
+			$0.register(on: self)
+		}
+	}
+
     public func register<T>(
         service: T.Type,
         withProvider provider: @escaping () -> T,
-		lifetime: DependencyLifetime
+		scope: DependencyScope
     ) {
         storage.store(
             serviceName: String(describing: T.self),
             instance: provider,
-			lifetime: lifetime
+			lifetime: scope
         )
     }
 

@@ -2,7 +2,7 @@ public protocol Registrar {
     func register<T>(
 		service: T.Type,
 		withProvider: @escaping () -> T,
-		lifetime: DependencyLifetime
+		scope: DependencyScope
 	)
 	func register<T: ArgumentedDependency>(
 		service: T.Type,
@@ -14,12 +14,12 @@ extension Registrar {
 	public func register<T>(
 		service: T.Type,
 		withProvider: @escaping () -> T,
-		lifetime: DependencyLifetime = .transient
+		scope: DependencyScope = .unique
 	){
 		register(
 			service: service,
 			withProvider: withProvider,
-			lifetime: lifetime
+			scope: scope
 		)
 	}
 }

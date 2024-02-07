@@ -40,7 +40,7 @@ final class InfrastructureDependencyManagerTests: XCTestCase
 			withProvider: {
 				dummyService as DummyService
 			},
-			lifetime: .transient
+			scope: .unique
 		)
 		
 		// Then

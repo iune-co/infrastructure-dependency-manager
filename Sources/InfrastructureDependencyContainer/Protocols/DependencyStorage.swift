@@ -4,7 +4,7 @@ public protocol DependencyStorage {
     func store(
 		serviceName: String,
 		instance: @escaping Closure,
-		lifetime: DependencyLifetime
+		lifetime: DependencyScope
 	)
     func retrieve(serviceName: String) throws -> Closure
     func store(serviceName: String, instance: @escaping ArgumentedClosure)

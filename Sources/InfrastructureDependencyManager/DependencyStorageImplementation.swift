@@ -1,33 +1,33 @@
 import InfrastructureDependencyContainer
 
-public final class DependencyStorageImplementation: DependencyStorage {
-	private var transientStorage: [String: ArgumentedClosure] = [:]
+final class DependencyStorageImplementation: DependencyStorage {
+	private var uniqueStorage: [String: ArgumentedClosure] = [:]
 	private var singletonStorage: [String: Any] = [:]
 	
-    public init() {}
+    init() {}
     
-    public func store(
+    func store(
         serviceName: String,
         instance: @escaping Closure,
-		lifetime: DependencyLifetime
+		lifetime: DependencyScope
     ) {
 		switch lifetime {
 		case .singleton:
 			singletonStorage[serviceName] = instance()
-		case .transient:
-			transientStorage[serviceName] = { _ in instance() }
+		case .unique:
+			uniqueStorage[serviceName] = { _ in instance() }
 		}
     }
     
-	public func store(
+	func store(
 		serviceName: String,
 		instance: @escaping ArgumentedClosure
 	) {
-		transientStorage[serviceName] = instance
+		uniqueStorage[serviceName] = instance
 	}
 
-    public func retrieve(serviceName: String) throws -> Closure {
-		guard let service = try singletonStorage[serviceName] ?? transientStorage[serviceName]?(()) else {
+    func retrieve(serviceName: String) throws -> Closure {
+		guard let service = try singletonStorage[serviceName] ?? uniqueStorage[serviceName]?(()) else {
 			throw DependencyContainerError.dependencyNotRegistered(serviceName)
 		}
 		
@@ -36,8 +36,8 @@ public final class DependencyStorageImplementation: DependencyStorage {
 		}
     }
 
-    public func retrieve(serviceName: String) throws -> ArgumentedClosure {
-		guard let service = transientStorage[serviceName] else {
+    func retrieve(serviceName: String) throws -> ArgumentedClosure {
+		guard let service = uniqueStorage[serviceName] else {
 			throw DependencyContainerError.dependencyNotRegistered(serviceName)
 		}
 
