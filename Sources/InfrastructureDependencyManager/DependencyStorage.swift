@@ -1,4 +1,6 @@
 import InfrastructureDependencyContainer
+import Foundation
+
 
 protocol DependencyStorage {
 	typealias ArgumentedClosure = ((Any) throws -> Any)
@@ -16,7 +18,9 @@ protocol DependencyStorage {
 final class DependencyStorageImplementation: DependencyStorage {
 	private var uniqueStorage: [String: ArgumentedClosure] = [:]
 	private var singletonStorage: [String: Any] = [:]
-	
+	private let singletonStorageLock = NSRecursiveLock()
+	private let uniqueStorageLock = NSRecursiveLock()
+
     init() {}
     
     func store(
@@ -26,9 +30,13 @@ final class DependencyStorageImplementation: DependencyStorage {
     ) {
 		switch scope {
 		case .singleton:
-			singletonStorage[serviceName] = instance()
+			singletonStorageLock.locked {
+				singletonStorage[serviceName] = instance()
+			}
 		case .unique:
-			uniqueStorage[serviceName] = { _ in instance() }
+			uniqueStorageLock.locked {
+				uniqueStorage[serviceName] = { _ in instance() }
+			}
 		}
     }
     
@@ -36,7 +44,9 @@ final class DependencyStorageImplementation: DependencyStorage {
 		serviceName: String,
 		instance: @escaping ArgumentedClosure
 	) {
-		uniqueStorage[serviceName] = instance
+		uniqueStorageLock.locked {
+			uniqueStorage[serviceName] = instance
+		}
 	}
 
     func retrieve(serviceName: String) throws -> Closure {

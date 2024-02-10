@@ -2,15 +2,22 @@ import Foundation
 import InfrastructureDependencyContainer
 
 public final class DependencyInjectionManager: DependencyManager {
-	private let globalContainer: DependencyContainer
-	private let localContainer: DependencyContainer
+	public let globalContainer: DependencyContainer
+	public let localContainer: DependencyContainer
 	
-	init(
-		from container: DependencyContainer,
-		serviceRegistrars: [ServiceRegistrar]) {
-			self.globalContainer = container
+	public init(
+		from container: DependencyContainer? = nil,
+		serviceRegistrars: [ServiceRegistrar]
+	) {
+			self.globalContainer = container ?? DependencyContainerImplementation(serviceRegistrars: serviceRegistrars)
 			self.localContainer = DependencyContainerImplementation(serviceRegistrars: serviceRegistrars)
-		}
+	}
+	
+	init(globalContainer: DependencyContainer, localContainer: DependencyContainer) {
+		self.localContainer = localContainer
+		self.globalContainer = globalContainer
+		
+	}
 	
 	public func register<T: ArgumentedDependency>(
 		service: T.Type,
@@ -39,21 +46,20 @@ public final class DependencyInjectionManager: DependencyManager {
 	}
 	
 	public func resolve<T>() throws -> T {
-		guard let value: T = try? localContainer.resolve() else {
-			return try globalContainer.resolve()
+		guard let value: T = try? globalContainer.resolve() else {
+			return try localContainer.resolve()
 		}
 		
 		return value
 	}
 	
 	public func resolve<T: ArgumentedDependency>(argument: T.Arguments) throws -> T {
-		guard let value: T = try? localContainer.resolve() else {
-			return try globalContainer.resolve()
+		guard let value: T = try? globalContainer.resolve(argument: argument) else {
+			return try localContainer.resolve(argument: argument)
 		}
 		
 		return value
 	}
-
 }
 
 // MARK: - Private Methods
