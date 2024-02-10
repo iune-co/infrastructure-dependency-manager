@@ -4,12 +4,10 @@
 extension DependencyContainerImplementation
 {
     static func fixtureWithMocks(
-        storage: DependencyStorage = DependencyStorageMock(),
-        serviceRegistrars: [ServiceRegistrar] = [ServiceRegistrarMock()]
+        storage: DependencyStorage = DependencyStorageMock()
     ) -> DependencyContainerImplementation {
         DependencyContainerImplementation(
-            storage: storage,
-            serviceRegistrars: serviceRegistrars
+            storage: storage
         )
     }
 }

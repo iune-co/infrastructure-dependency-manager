@@ -1,3 +1,3 @@
 public protocol ServiceRegistrar {
-    func register(on: DependencyContainer)
+    func register(on: DependencyManager)
 }

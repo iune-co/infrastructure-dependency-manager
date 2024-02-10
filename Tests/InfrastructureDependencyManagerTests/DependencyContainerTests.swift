@@ -4,40 +4,6 @@ import InfrastructureDependencyContainer
 
 final class DependencyContainerTests: XCTestCase 
 {
-	// MARK: - Init
-
-    func test_init_noStorage_thenCallsRegisterMethodOnServiceRegistrar()
-    {
-        // Given
-        let serviceRegistrarMock = ServiceRegistrarMock()
-        
-        // When
-        _ = DependencyContainerImplementation.init(serviceRegistrars: [serviceRegistrarMock])
-        
-        // Then
-        XCTAssertTrue(
-            serviceRegistrarMock.registerMethodWasCalled,
-            "DependencyContainerImplementation must call ServiceRegistrar's register method when initializing."
-        )
-    }
-
-    func test_init_thenCallsRegisterMethodOnServiceRegistrar()
-    {
-        // Given
-        let serviceRegistrarMock = ServiceRegistrarMock()
-        
-        // When
-        _ = DependencyContainerImplementation.fixtureWithMocks(
-            serviceRegistrars: [serviceRegistrarMock]
-        )
-        
-        // Then
-        XCTAssertTrue(
-            serviceRegistrarMock.registerMethodWasCalled,
-            "DependencyContainerImplementation must call ServiceRegistrar's register method when initializing."
-        )
-    }
-    
 	// MARK: - Register No Arguments
 
     func test_register_andNoArguments_thenCallsStoreMethodOnStorage()

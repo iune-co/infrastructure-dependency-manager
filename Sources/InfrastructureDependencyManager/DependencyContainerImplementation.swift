@@ -4,18 +4,13 @@ class DependencyContainerImplementation: DependencyContainer {
 	private let storage: DependencyStorage
 	
 	init(
-		storage: DependencyStorage,
-		serviceRegistrars: [ServiceRegistrar]
+		storage: DependencyStorage
 	) {
 		self.storage = storage
-		self.registerServices(using: serviceRegistrars)
 	}
 
-	init(
-		serviceRegistrars: [ServiceRegistrar]
-	) {
+	init() {
 		self.storage = DependencyStorageImplementation()
-		self.registerServices(using: serviceRegistrars)
 	}
 
     func register<T>(
@@ -68,12 +63,4 @@ class DependencyContainerImplementation: DependencyContainer {
 		
 		return  instance
     }
-}
-
-// MARK: - Private Helpers
-
-extension DependencyContainerImplementation {
-	private func registerServices(using registrars: [ServiceRegistrar]) {
-		registrars.forEach { $0.register(on: self) }
-	}
 }

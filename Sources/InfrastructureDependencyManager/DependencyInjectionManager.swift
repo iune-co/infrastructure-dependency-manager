@@ -9,8 +9,10 @@ public final class DependencyInjectionManager: DependencyManager {
 		from container: DependencyContainer? = nil,
 		serviceRegistrars: [ServiceRegistrar]
 	) {
-			self.globalContainer = container ?? DependencyContainerImplementation(serviceRegistrars: serviceRegistrars)
-			self.localContainer = DependencyContainerImplementation(serviceRegistrars: serviceRegistrars)
+		self.globalContainer = container ?? DependencyContainerImplementation()
+		self.localContainer = DependencyContainerImplementation()
+		
+		registerServices(using: serviceRegistrars)
 	}
 	
 	init(globalContainer: DependencyContainer, localContainer: DependencyContainer) {
@@ -72,5 +74,9 @@ extension DependencyInjectionManager {
 		case .local:
 			localContainer
 		}
+	}
+	
+	private func registerServices(using registrars: [ServiceRegistrar]) {
+		registrars.forEach { $0.register(on: self) }
 	}
 }
