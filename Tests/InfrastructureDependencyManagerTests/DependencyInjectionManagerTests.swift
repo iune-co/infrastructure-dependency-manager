@@ -1,8 +1,16 @@
 import XCTest
-import InfrastructureDependencyContainer
+@testable import InfrastructureDependencyContainer
 @testable import InfrastructureDependencyManager
 
 final class DependencyInjectionManagerTests: XCTestCase {
+	// MARK: - Tear Down
+
+	override func tearDown() {
+		super.tearDown()
+
+		InjectConfig.reset()
+	}
+
 	// MARK: - Init
 
 	func test_init_noGlobalContainer_thenCallsRegisterMethodOnServiceRegistrar() {
@@ -228,5 +236,11 @@ final class DependencyInjectionManagerTests: XCTestCase {
 			localContainerMock.didCallArgumentedResolve,
 			"DependencyContainerImplementation must call Local DependencyContainer."
 		)
+	}
+}
+
+extension InjectConfig {
+	fileprivate static func reset() {
+		InjectConfig.totalSet = 0
 	}
 }

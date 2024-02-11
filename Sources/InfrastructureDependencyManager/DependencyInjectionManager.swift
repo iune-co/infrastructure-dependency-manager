@@ -12,6 +12,7 @@ public final class DependencyInjectionManager: DependencyManager {
 		self.globalContainer = container ?? DependencyContainerImplementation()
 		self.localContainer = DependencyContainerImplementation()
 		
+		InjectConfig.dependencyManager = self
 		registerServices(using: serviceRegistrars)
 	}
 	
