@@ -1,6 +1,6 @@
 import InfrastructureDependencyContainer
 
-class DependencyContainerImplementation: DependencyContainer {
+final class DependencyContainerImplementation: DependencyContainer {
 	private let storage: DependencyStorage
 	
 	init(

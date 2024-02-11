@@ -19,7 +19,6 @@ public final class DependencyInjectionManager: DependencyManager {
 	init(globalContainer: DependencyContainer, localContainer: DependencyContainer) {
 		self.localContainer = localContainer
 		self.globalContainer = globalContainer
-		
 	}
 	
 	public func register<T: ArgumentedDependency>(
