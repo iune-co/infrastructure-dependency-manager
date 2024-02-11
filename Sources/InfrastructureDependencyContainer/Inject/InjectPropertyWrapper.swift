@@ -1,7 +1,7 @@
 import Foundation
 
 @propertyWrapper
-public class Inject<T> {
+open class Inject<T> {
 	public let wrappedValue: T
 
 	public init() {

@@ -1,7 +1,7 @@
 import Foundation
 
 @propertyWrapper
-public class DIManager {
+open class DIManager {
 	public let wrappedValue: DependencyManager
 
 	public init() {
