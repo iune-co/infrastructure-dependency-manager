@@ -2,7 +2,7 @@ import Foundation
 
 @propertyWrapper
 open class Inject<T> {
-	public let wrappedValue: T
+	open var wrappedValue: T
 
 	public init(_ dependencyManager: DependencyManager? = nil) {
 		guard let dependencyManager = dependencyManager ?? InjectConfig.dependencyManager else {

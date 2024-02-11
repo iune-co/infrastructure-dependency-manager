@@ -2,7 +2,7 @@ import Foundation
 
 @propertyWrapper
 open class DIManager {
-	public let wrappedValue: DependencyManager
+	open var wrappedValue: DependencyManager
 
 	public init(_ dependencyManager: DependencyManager? = nil) {
 		guard let dependencyManager = dependencyManager ?? InjectConfig.dependencyManager else {
