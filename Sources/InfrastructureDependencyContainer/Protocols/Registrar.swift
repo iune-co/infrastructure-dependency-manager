@@ -1,4 +1,7 @@
 public protocol DependencyManager: Resolver {
+	var globalContainer: DependencyContainer { get }
+	var localContainer: DependencyContainer { get }
+
     func register<T>(
 		service: T.Type,
 		withProvider: @escaping () -> T,

@@ -5,7 +5,7 @@ open class Inject<T> {
 	open var wrappedValue: T
 
 	public init(_ dependencyManager: DependencyManager? = nil) {
-		guard let dependencyManager = dependencyManager ?? InjectConfig.dependencyManager else {
+		guard let dependencyManager = dependencyManager else {
 			fatalError("Dependency manager is not set in the `InjectConfig`")
 		}
 		

@@ -7,8 +7,6 @@ final class DependencyInjectionManagerTests: XCTestCase {
 
 	override func tearDown() {
 		super.tearDown()
-
-		InjectConfig.reset()
 	}
 
 	// MARK: - Init
@@ -236,11 +234,5 @@ final class DependencyInjectionManagerTests: XCTestCase {
 			localContainerMock.didCallArgumentedResolve,
 			"DependencyContainerImplementation must call Local DependencyContainer."
 		)
-	}
-}
-
-extension InjectConfig {
-	fileprivate static func reset() {
-		InjectConfig.totalSet = 0
 	}
 }
