@@ -1,15 +1,8 @@
 @testable import InfrastructureDependencyContainer
 
-final class ServiceRegisterMock: ServiceRegister
-{
+final class ServiceRegistrarMock: ServiceRegistrar {
     private(set) var registerMethodWasCalled: Bool = false
-    
-    init()
-    {
-        
-    }
-    
-    func register(on container: DependencyContainer)
+    func register(on manager: DependencyManager)
     {
         registerMethodWasCalled = true
     }

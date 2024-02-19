@@ -19,7 +19,10 @@ jobs:
       - name: Use Xcode 15.1
         run: sudo xcode-select --switch /Applications/Xcode_15.1.app
 
-      - name: Build and test
+      - name: Build
         run: |
           swift build
+          
+      - name: Test
+        run: |
           swift test

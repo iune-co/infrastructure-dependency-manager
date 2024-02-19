@@ -11,21 +11,23 @@ let package = Package(
                 "InfrastructureDependencyManager"
             ]
         ),
-    ],
-    dependencies: [
-        .package(
-            url: "https://github.com/iune-co/infrastructure-dependency-container.git",
-            exact: Version("2.0.1")
-        )
+        .library(
+            name: "InfrastructureDependencyContainer",
+            targets: [
+                "InfrastructureDependencyContainer"
+            ]
+        ),
     ],
     targets: [
         .target(
             name: "InfrastructureDependencyManager",
             dependencies: [
-                .product(
-                    name: "InfrastructureDependencyContainer",
-                    package: "infrastructure-dependency-container"
-                )
+				"InfrastructureDependencyContainer"
+            ]
+        ),
+		.target(
+            name: "InfrastructureDependencyContainer",
+            dependencies: [
             ]
         ),
         .testTarget(

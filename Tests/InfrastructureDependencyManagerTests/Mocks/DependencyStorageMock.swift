@@ -1,26 +1,43 @@
-@testable import InfrastructureDependencyContainer
+@testable import InfrastructureDependencyManager
+import InfrastructureDependencyContainer
 
 final class DependencyStorageMock: DependencyStorage
 {
-    var serviceToRetrieve: (() -> Any)?
-    private(set) var retrieveMethodWasCalled: Bool = false
-    private(set) var storeMethodWasCalled: Bool = false
-    
-    init(serviceToRetrieve: (() -> Any)? = nil)
-    {
-        self.serviceToRetrieve = serviceToRetrieve
-    }
-    
+	private(set) var didCallStore: Bool = false
+	private(set) var storeInstanceClosure: Closure?
     func store(
         serviceName: String,
-        instance: @escaping () -> Any
+        instance: @escaping Closure,
+		scope: DependencyScope
     ) {
-        storeMethodWasCalled = true
+		didCallStore = true
+		storeInstanceClosure = instance
     }
     
-    func retrieve(serviceName: String) -> (() -> Any)?
+	var stubRetrieveReturn: Closure?
+	private(set) var didCallRetrieve: Bool = false
+    func retrieve(serviceName: String) -> Closure
     {
-        retrieveMethodWasCalled = true
-        return serviceToRetrieve
+        didCallRetrieve = true
+		return stubRetrieveReturn ?? {()}
     }
+	
+	private(set) var didCallArgumentedStore = false
+	private(set) var storeInstanceArgumentedClosure: ArgumentedClosure?
+	func store(serviceName: String, instance: @escaping ArgumentedClosure) {
+		didCallArgumentedStore = true
+		storeInstanceArgumentedClosure = instance
+	}
+	
+	var stubArgumentedRetrieveReturn: ArgumentedClosure?
+	var stubArgumentedError: Error?
+	private(set) var didCallAttributedRetrieve: Bool = false
+	func retrieve(serviceName: String) throws -> ArgumentedClosure {
+		didCallAttributedRetrieve = true
+		guard stubArgumentedError == nil else {
+			throw stubArgumentedError!
+		}
+
+		return stubArgumentedRetrieveReturn ?? { _ in () }
+	}
 }

@@ -1,0 +1,6 @@
+sources:
+  -
+templates:
+  - path/to/your/SourceryTemplates
+output:
+  path: path/to/Generated
