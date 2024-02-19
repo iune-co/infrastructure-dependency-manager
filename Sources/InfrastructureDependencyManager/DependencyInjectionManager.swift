@@ -47,18 +47,24 @@ public final class DependencyInjectionManager: DependencyManager {
 	}
 	
 	public func resolve<T>() throws -> T {
-		guard let value: T = try? globalContainer.resolve() else {
-			return try localContainer.resolve()
+		let value: T
+		do {
+			value = try globalContainer.resolve()
+		} catch {
+			value = try localContainer.resolve()
 		}
-		
+
 		return value
 	}
 	
 	public func resolve<T: ArgumentedDependency>(argument: T.Arguments) throws -> T {
-		guard let value: T = try? globalContainer.resolve(argument: argument) else {
-			return try localContainer.resolve(argument: argument)
+		let value: T
+		do {
+			value = try globalContainer.resolve(argument: argument)
+		} catch {
+			value = try localContainer.resolve(argument: argument)
 		}
-		
+
 		return value
 	}
 }
