@@ -50,7 +50,7 @@ final class DependencyStorageImplementation: DependencyStorage {
 	}
 
     func retrieve(serviceName: String) throws -> Closure {
-		guard let service = try singletonStorage[serviceName] ?? uniqueStorage[serviceName]?(()) else {
+		guard let service = try? singletonStorage[serviceName] ?? uniqueStorage[serviceName]?(()) else {
 			throw DependencyContainerError.dependencyNotRegistered(serviceName)
 		}
 		
