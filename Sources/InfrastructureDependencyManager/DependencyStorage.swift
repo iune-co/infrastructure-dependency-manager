@@ -28,6 +28,10 @@ final class DependencyStorageImplementation: DependencyStorage {
         instance: @escaping Closure,
 		scope: DependencyScope
     ) {
+		let serviceName =  serviceName
+			.replacingOccurrences(of: "Optional<", with: "")
+			.replacingOccurrences(of: ">", with: "")
+
 		switch scope {
 		case .singleton:
 			singletonStorageLock.locked {
@@ -44,12 +48,20 @@ final class DependencyStorageImplementation: DependencyStorage {
 		serviceName: String,
 		instance: @escaping ArgumentedClosure
 	) {
+		let serviceName =  serviceName
+			.replacingOccurrences(of: "Optional<", with: "")
+			.replacingOccurrences(of: ">", with: "")
+
 		uniqueStorageLock.locked {
 			uniqueStorage[serviceName] = instance
 		}
 	}
 
     func retrieve(serviceName: String) throws -> Closure {
+		let serviceName =  serviceName
+			.replacingOccurrences(of: "Optional<", with: "")
+			.replacingOccurrences(of: ">", with: "")
+		
 		guard let service = try? singletonStorage[serviceName] ?? uniqueStorage[serviceName]?(()) else {
 			throw DependencyContainerError.dependencyNotRegistered(serviceName)
 		}
@@ -60,6 +72,10 @@ final class DependencyStorageImplementation: DependencyStorage {
     }
 
     func retrieve(serviceName: String) throws -> ArgumentedClosure {
+		let serviceName =  serviceName
+			.replacingOccurrences(of: "Optional<", with: "")
+			.replacingOccurrences(of: ">", with: "")
+
 		guard let service = uniqueStorage[serviceName] else {
 			throw DependencyContainerError.dependencyNotRegistered(serviceName)
 		}
